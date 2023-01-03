@@ -1,8 +1,10 @@
 package userController
 
 import (
+	"log"
 	"login-vue/dao/userDao"
 	"login-vue/models"
+	"login-vue/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -117,7 +119,12 @@ func Login(ctx *gin.Context) {
 	// 	return
 	// }
 	// 6. 密码正确 发放token
-	token := "11"
+	token, err := utils.GetToken(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "系统异常"})
+		log.Printf("token generate error : %v", err)
+		return
+	}
 
 	// 7. 返回登录成功
 	ctx.JSON(200, gin.H{
