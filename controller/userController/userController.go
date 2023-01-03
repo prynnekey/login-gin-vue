@@ -3,6 +3,7 @@ package userController
 import (
 	"log"
 	"login-vue/dao/userDao"
+	"login-vue/dto/userDto"
 	"login-vue/models"
 	"login-vue/utils"
 	"net/http"
@@ -89,7 +90,6 @@ func Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "注册成功",
-		"data": user,
 	})
 }
 
@@ -137,11 +137,13 @@ func Login(ctx *gin.Context) {
 // 用户登录成功后的信息
 func Info(ctx *gin.Context) {
 	// 从上下文中获取user
-	user, _ := ctx.Get("user")
+	_user, _ := ctx.Get("user")
+	_u := _user.(models.User)
+	userDto := userDto.NewUserDto(&_u)
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"data": gin.H{
-			"user": user,
+			"user": userDto,
 		},
 	})
 }
