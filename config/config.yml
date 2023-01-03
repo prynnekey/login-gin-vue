@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+
+databases:
+  mysql:
+    # 要链接的主机ip
+    host: localhost
+    # 端口
+    port: 3306
+    # mysql 用户名
+    username: root
+    # mysql密码
+    password: prynnekey
+    # 连接的数据库名称
+    dbname: gin_test
