@@ -94,17 +94,35 @@ func Register(ctx *gin.Context) {
 // 用户登录
 func Login(ctx *gin.Context) {
 	// 1. 获取用户名和密码
-	// username := ctx.PostForm("username")
-	// password := ctx.PostForm("password")
+	username := ctx.PostForm("username")
+	password := ctx.PostForm("password")
 
 	// 2. 根据用户名查询数据
-
-	// 3. 没查到 用户不存在
+	user, err := userDao.GetByUsername(username)
+	if err != nil {
+		// 3. 没查到 用户不存在
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "用户不存在"})
+		return
+	}
 
 	// 4. 查到 对比密码是否正确
+	if password != user.Password {
+		// 5. 密码不正确 返回错误信息
+		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "密码错误"})
+		return
+	}
+	// if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	// 	// 5. 密码不正确 返回错误信息
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "密码错误"})
+	// 	return
+	// }
+	// 6. 密码正确 发放token
+	token := "11"
 
-	// 5. 密码不正确 返回错误信息
-
-	// 6. 密码正确 返回登录成功
-
+	// 7. 返回登录成功
+	ctx.JSON(200, gin.H{
+		"code":    200,
+		"data":    gin.H{"token": token, "user": user},
+		"message": "登录成功",
+	})
 }

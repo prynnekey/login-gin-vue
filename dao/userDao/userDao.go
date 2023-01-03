@@ -39,6 +39,17 @@ func IsTelNotExist(tel string) bool {
 	return user.ID != 0
 }
 
-func GetByUsername() {
+// 根据用户名查询一条user数据
+// @param username 要查询的用户名
+// @return 查询到的结果
+func GetByUsername(username string) (models.User, error) {
+	user := models.User{}
+	// select * from user where username = ?
+	err := global.DB.Where("username = ?", username).First(&user).Error
+	if user.ID == 0 {
+		// 没查到 用户不存在
+		return user, err
+	}
 
+	return user, nil
 }
