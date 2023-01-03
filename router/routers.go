@@ -3,12 +3,16 @@ package router
 import (
 	"login-vue/controller/userController"
 	"login-vue/middleware/authMiddleware"
+	"login-vue/middleware/corsMiddleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouters() {
 	r := gin.Default()
+
+	// 开启全局中间件 处理跨域请求
+	r.Use(corsMiddleware.CORSMiddleware())
 
 	auth := r.Group("/auth")
 	{
