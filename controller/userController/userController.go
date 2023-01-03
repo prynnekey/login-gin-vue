@@ -2,7 +2,6 @@ package userController
 
 import (
 	"login-vue/dao/userDao"
-	"login-vue/global"
 	"login-vue/models"
 	"net/http"
 
@@ -50,10 +49,8 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	db := global.DB
-
 	// 判断用户名是否存在
-	if userDao.IsUsernameNotExist(db, username) {
+	if userDao.IsUsernameNotExist(username) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
 			"msg":  "用户名已存在",
@@ -62,7 +59,7 @@ func Register(ctx *gin.Context) {
 	}
 
 	// 判断手机号是否存在
-	if userDao.IsTelNotExist(db, tel) {
+	if userDao.IsTelNotExist(tel) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
 			"msg":  "手机号已存在",
@@ -78,7 +75,13 @@ func Register(ctx *gin.Context) {
 	}
 
 	// 插入数据
-	db.Create(user)
+	i := userDao.Save(user)
+	if i == 0 {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": 422,
+			"msg":  "服务器故障啦！注册失败",
+		})
+	}
 
 	// 返回信息
 	ctx.JSON(http.StatusOK, gin.H{
@@ -90,5 +93,18 @@ func Register(ctx *gin.Context) {
 
 // 用户登录
 func Login(ctx *gin.Context) {
+	// 1. 获取用户名和密码
+	// username := ctx.PostForm("username")
+	// password := ctx.PostForm("password")
+
+	// 2. 根据用户名查询数据
+
+	// 3. 没查到 用户不存在
+
+	// 4. 查到 对比密码是否正确
+
+	// 5. 密码不正确 返回错误信息
+
+	// 6. 密码正确 返回登录成功
 
 }
