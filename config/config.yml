@@ -14,3 +14,5 @@ databases:
     password: prynnekey
     # 连接的数据库名称
     dbname: gin_test
+    # 是否显示sql日志 默认为false
+    logger: true

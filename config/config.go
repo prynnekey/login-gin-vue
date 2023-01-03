@@ -37,11 +37,21 @@ func initDB() {
 	username := viper.GetString("databases.mysql.username")
 	password := viper.GetString("databases.mysql.password")
 	dbname := viper.GetString("databases.mysql.dbname")
+	sql_logger := viper.GetBool("databases.mysql.logger")
+	fmt.Println("sql日志:", sql_logger)
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		// 查看sql语句日志
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	var (
+		db  *gorm.DB
+		err error
+	)
+	if sql_logger {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			// 查看sql语句日志
+			Logger: logger.Default.LogMode(logger.Info),
+		})
+	} else {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	}
 	if err != nil {
 		panic("failed to connect database, err:" + err.Error())
 	}
