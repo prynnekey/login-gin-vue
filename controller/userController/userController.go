@@ -1,16 +1,15 @@
-package controller
+package userController
 
 import (
-	"fmt"
+	"login-vue/dao/userDao"
 	"login-vue/global"
 	"login-vue/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func UserRegister(ctx *gin.Context) {
+func Register(ctx *gin.Context) {
 	// 获取参数
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
@@ -54,7 +53,7 @@ func UserRegister(ctx *gin.Context) {
 	db := global.DB
 
 	// 判断用户名是否存在
-	if isUsernameNotExist(db, username) {
+	if userDao.IsUsernameNotExist(db, username) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
 			"msg":  "用户名已存在",
@@ -63,7 +62,7 @@ func UserRegister(ctx *gin.Context) {
 	}
 
 	// 判断手机号是否存在
-	if isTelNotExist(db, tel) {
+	if userDao.IsTelNotExist(db, tel) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
 			"msg":  "手机号已存在",
@@ -89,26 +88,7 @@ func UserRegister(ctx *gin.Context) {
 	})
 }
 
-// 判断用户名是否存在
-// @return true: 用户名不存在 false:用户名存在
-func isUsernameNotExist(db *gorm.DB, username string) bool {
-	user := models.User{}
-	// 从数据库中查询数据
-	db.Where("username = ?", username).First(&user)
+// 用户登录
+func Login(ctx *gin.Context) {
 
-	fmt.Printf("user: %v\n", user)
-
-	return user.ID != 0
-}
-
-// 判断手机号是否存在
-// @return true: 手机号不存在 false:手机号存在
-func isTelNotExist(db *gorm.DB, tel string) bool {
-	user := models.User{}
-	// 从数据库中查询数据
-	db.Where("tel = ?", tel).First(&user)
-
-	fmt.Printf("user: %v\n", user)
-
-	return user.ID != 0
 }
