@@ -129,7 +129,19 @@ func Login(ctx *gin.Context) {
 	// 7. 返回登录成功
 	ctx.JSON(200, gin.H{
 		"code":    200,
-		"data":    gin.H{"token": token, "user": user},
+		"data":    gin.H{"token": token},
 		"message": "登录成功",
+	})
+}
+
+// 用户登录成功后的信息
+func Info(ctx *gin.Context) {
+	// 从上下文中获取user
+	user, _ := ctx.Get("user")
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"data": gin.H{
+			"user": user,
+		},
 	})
 }

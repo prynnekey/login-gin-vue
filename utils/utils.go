@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"login-vue/models"
 	"time"
 
@@ -38,4 +39,20 @@ func GetToken(user models.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+// 解析token
+func ParseToken(tokenString string) (*Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, errors.New("invalid token")
 }

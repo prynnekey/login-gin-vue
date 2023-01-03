@@ -2,6 +2,7 @@ package router
 
 import (
 	"login-vue/controller/userController"
+	"login-vue/middleware/authMiddleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,9 @@ func InitRouters() {
 		auth.POST("/register", userController.Register)
 		// 用户登录
 		auth.POST("/login", userController.Login)
+
+		// 只有授权才可以访问
+		auth.GET("/info", authMiddleware.AuthMiddleware(), userController.Info)
 	}
 
 	r.Run()

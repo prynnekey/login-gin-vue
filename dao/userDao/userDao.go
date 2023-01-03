@@ -53,3 +53,15 @@ func GetByUsername(username string) (models.User, error) {
 
 	return user, nil
 }
+
+// 根据id获取use
+func GetById(userId uint) (models.User, error) {
+	user := models.User{}
+	// select * from user where id = ?
+	err := global.DB.Where("id = ?", userId).First(&user).Error
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
